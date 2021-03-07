@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import Summary from './Summary';
+import Summary from "./Summary";
 
 class Character extends Component {
   state = { loadedCharacter: {}, isLoading: false };
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log('shouldComponentUpdate');
+    console.log("shouldComponentUpdate");
     return (
       nextProps.selectedChar !== this.props.selectedChar ||
       nextState.loadedCharacter.id !== this.state.loadedCharacter.id ||
@@ -15,7 +15,7 @@ class Character extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('Component did update');
+    console.log("Component did update");
     if (prevProps.selectedChar !== this.props.selectedChar) {
       this.fetchData();
     }
@@ -27,38 +27,39 @@ class Character extends Component {
 
   fetchData = () => {
     console.log(
-      'Sending Http request for new character with id ' +
+      "Sending Http request for new character with id " +
         this.props.selectedChar
     );
     this.setState({ isLoading: true });
-    fetch('https://swapi.dev/api/people/' + this.props.selectedChar)
-      .then(response => {
+    let url = "https://swapi.dev/api/people/" + this.props.selectedChar + "/";
+    fetch(url)
+      .then((response) => {
         if (!response.ok) {
-          throw new Error('Could not fetch person!');
+          throw new Error("Could not fetch person!");
         }
         return response.json();
       })
-      .then(charData => {
+      .then((charData) => {
         const loadedCharacter = {
           id: this.props.selectedChar,
           name: charData.name,
           height: charData.height,
           colors: {
             hair: charData.hair_color,
-            skin: charData.skin_color
+            skin: charData.skin_color,
           },
           gender: charData.gender,
-          movieCount: charData.films.length
+          movieCount: charData.films.length,
         };
         this.setState({ loadedCharacter: loadedCharacter, isLoading: false });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
 
   componentWillUnmount() {
-    console.log('Too soon...');
+    console.log("Too soon...");
   }
 
   render() {
